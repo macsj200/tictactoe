@@ -78,6 +78,18 @@ class TicTacWindow extends JFrame{
 			setMaximumSize(new Dimension(size, size));
 			setPreferredSize(new Dimension(size, size));
 		}
+		
+		public void addOwnedPanel(char owner){
+			if(owner == 'X'){
+				add(new XPanel(getBackground(), boxSize), "");
+				Game.setCircleTurn(true);
+			}
+			else if(owner == 'O'){
+				add(new OPanel(getBackground(), boxSize), "");
+				Game.setSquareTurn(true);
+			}
+			setOwner(owner);
+		}
 
 		public boolean isOwned(){
 			return owned;
@@ -156,14 +168,10 @@ class TicTacWindow extends JFrame{
 			SquareJPanel source = (SquareJPanel) e.getSource();
 			if(!source.isOwned()){
 				if(Game.isCircleTurn()){
-					source.add(new OPanel(source.getBackground(), boxSize), "");
-					source.setOwner('O');
-					Game.setSquareTurn(true);
+					source.addOwnedPanel('O');
 				}
 				else{
-					source.add(new XPanel(source.getBackground(), boxSize), "");
-					source.setOwner('X');
-					Game.setCircleTurn(true);
+					source.addOwnedPanel('X');
 				}
 				CardLayout layout = (CardLayout) (source.getLayout());
 				layout.next(source);
