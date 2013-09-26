@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
@@ -80,6 +81,26 @@ class TicTacWindow extends JFrame{
 	TicTacGame Game;
 	BoxGrid Grid;
 
+	class Coordinates{
+		int x, y;
+		Coordinates(int x, int y){
+			this.x = x;
+			this.y = y;
+		}
+		
+		public String toString(){
+			return "(" + getX() + ", " + getY() + ")";
+		}
+		
+		public int getX(){
+			return x;
+		}
+		
+		public int getY(){
+			return y;
+		}
+	}
+	
 	private void addComponents(){
 		Grid = new BoxGrid(boxSize);
 		getContentPane().add(Grid);
@@ -98,12 +119,21 @@ class TicTacWindow extends JFrame{
 	class SquareJPanel extends JPanel {
 		private Owner OwnerObject;
 		private boolean owned;
+		private Coordinates Location;
 		private SquareJPanel(Color color, int size){
 			super(new CardLayout());
 			setBackground(color);
 			setMinimumSize(new Dimension(size, size));
 			setMaximumSize(new Dimension(size, size));
 			setPreferredSize(new Dimension(size, size));
+		}
+		
+		public void setCoordinates(Coordinates Location){
+			this.Location = Location;
+		}
+		
+		public Coordinates getCoordinates(){
+			return Location;
 		}
 
 		public void addOwnedPanel(String owner) throws OwnedException{
@@ -193,7 +223,7 @@ class TicTacWindow extends JFrame{
 	}
 
 	class BoxGrid extends JPanel{
-		private JPanel[][] boxarr = new JPanel[3][3];
+		private SquareJPanel[][] boxarr = new SquareJPanel[3][3];
 		private BoxGrid(int boxSize){
 			setLayout(new GridLayout(3,3));
 			for(int i = 0; i < 3; i++){
@@ -205,6 +235,7 @@ class TicTacWindow extends JFrame{
 						boxarr[i][j] = new SquareJPanel(Color.gray, boxSize);
 					}
 					boxarr[i][j].addMouseListener(new PanelListener());
+					boxarr[i][j].setCoordinates(new Coordinates(i,j));
 					add(boxarr[i][j]);
 				}
 			}
