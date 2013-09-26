@@ -69,7 +69,7 @@ class TicTacWindow extends JFrame{
 	}
 
 	class SquareJPanel extends JPanel {
-		private char owner;
+		private Owner OwnerObject;
 		private boolean owned;
 		private SquareJPanel(Color color, int size){
 			super(new CardLayout());
@@ -79,33 +79,56 @@ class TicTacWindow extends JFrame{
 			setPreferredSize(new Dimension(size, size));
 		}
 		
-		public void addOwnedPanel(char owner){
-			if(owner == 'X'){
-				add(new XPanel(getBackground(), boxSize), "");
+		public void addOwnedPanel(String owner){
+			addOwner(new Owner(owner, this));
+			if(owner.equals("X")){
 				Game.setCircleTurn(true);
 			}
-			else if(owner == 'O'){
-				add(new OPanel(getBackground(), boxSize), "");
+			else if(owner.equals("O")){
 				Game.setSquareTurn(true);
 			}
-			setOwner(owner);
 		}
 
 		public boolean isOwned(){
 			return owned;
 		}
 
-		public char getOwner(){
-			return owner;
+		public Owner getOwner(){
+			return OwnerObject;
+		}
+		
+		public String getOwnerAsString(){
+			return OwnerObject.toString();
 		}
 
 		private void setOwned(boolean isOwned){
 			owned = isOwned;
 		}
 
-		public void setOwner(char own){
+		public void addOwner(Owner OwnerObject){
+			this.OwnerObject = OwnerObject;
 			setOwned(true);
-			owner = own;
+		}
+	}
+	
+	class Owner{
+		String owner;
+		SquareJPanel OwnerPanel;
+		SquareJPanel ContainerPanel;
+		Owner(String owner, SquareJPanel ContainerPanel){
+			this.owner = owner;
+			this.ContainerPanel = ContainerPanel;
+			if(owner.equals("X")){
+				OwnerPanel = new XPanel(ContainerPanel.getBackground(), boxSize);
+			}
+			else if(owner.equals("O")){
+				OwnerPanel = new OPanel(ContainerPanel.getBackground(), boxSize);
+			}
+			ContainerPanel.add(OwnerPanel, "");
+		}
+		
+		public String toString(){
+			return owner;
 		}
 	}
 
@@ -168,10 +191,10 @@ class TicTacWindow extends JFrame{
 			SquareJPanel source = (SquareJPanel) e.getSource();
 			if(!source.isOwned()){
 				if(Game.isCircleTurn()){
-					source.addOwnedPanel('O');
+					source.addOwnedPanel("O");
 				}
 				else{
-					source.addOwnedPanel('X');
+					source.addOwnedPanel("X");
 				}
 				CardLayout layout = (CardLayout) (source.getLayout());
 				layout.next(source);
