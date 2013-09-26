@@ -18,7 +18,6 @@ public class TicTacToe {
 	TicTacToe(){
 		new TicTacGame();
 	}
-	//Git test commit
 }
 
 class TicTacGame{
