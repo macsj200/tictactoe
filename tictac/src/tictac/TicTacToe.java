@@ -7,31 +7,59 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class TicTacToe {
 	TicTacToe(){
-		new TicTacWindow(100);
+		new TicTacWindow(100, new TicTacGame());
 	}
 	//Git test commit
 }
 
-class TicTacWindow extends JFrame{
-	final int boxSize;
-	boolean circleTurn = true;
+class TicTacGame{
+	private boolean circleTurn;
+	private boolean squareTurn;
+	TicTacGame(){
+		this.circleTurn = true;
+		this.squareTurn = false;
+	}
+	
+	public boolean isCircleTurn(){
+		return circleTurn;
+	}
+	
+	public boolean isSquareTurn(){
+		return squareTurn;
+	}
+	
+	public void setCircleTurn(boolean circleTurn){
+		this.circleTurn = circleTurn;
+		this.squareTurn = !circleTurn;
+	}
+	
+	public void setSquareTurn(boolean squareTurn){
+		this.squareTurn = squareTurn;
+		this.circleTurn = !squareTurn;
+	}
+}
 
-	TicTacWindow(int boxSize){
+@SuppressWarnings("serial")
+class TicTacWindow extends JFrame{
+	int boxSize;
+	TicTacGame Game;
+	
+	private void addComponents(){
+		getContentPane().add(new BoxGrid());
+	}
+
+	TicTacWindow(int boxSize, TicTacGame Game){
 		this.boxSize = boxSize;
+		this.Game = Game;
 		setLayout(new FlowLayout());
 		addComponents();
 		pack();
@@ -42,7 +70,7 @@ class TicTacWindow extends JFrame{
 	class SquareJPanel extends JPanel {
 		private char owner;
 		private boolean owned;
-		SquareJPanel(Color color, int size){
+		private SquareJPanel(Color color, int size){
 			super(new CardLayout());
 			setBackground(color);
 			setMinimumSize(new Dimension(size, size));
@@ -50,26 +78,26 @@ class TicTacWindow extends JFrame{
 			setPreferredSize(new Dimension(size, size));
 		}
 
-		boolean isOwned(){
+		public boolean isOwned(){
 			return owned;
 		}
 
-		char getOwner(){
+		public char getOwner(){
 			return owner;
 		}
 
-		void setOwned(boolean isOwned){
+		private void setOwned(boolean isOwned){
 			owned = isOwned;
 		}
 
-		void setOwner(char own){
+		public void setOwner(char own){
 			setOwned(true);
 			owner = own;
 		}
 	}
 
 	class XPanel extends SquareJPanel{
-		XPanel(Color color, int size){
+		private XPanel(Color color, int size){
 			super(color, size);
 		}
 
@@ -84,7 +112,7 @@ class TicTacWindow extends JFrame{
 	}
 
 	class OPanel extends SquareJPanel{
-		OPanel(Color color, int size){
+		private OPanel(Color color, int size){
 			super(color, size);
 		}
 
@@ -99,8 +127,8 @@ class TicTacWindow extends JFrame{
 	}
 
 	class BoxGrid extends JPanel{
-		JPanel[][] boxarr = new JPanel[3][3];
-		BoxGrid(){
+		private JPanel[][] boxarr = new JPanel[3][3];
+		private BoxGrid(){
 			setLayout(new GridLayout(3,3));
 			for(int i = 0; i < 3; i++){
 				for(int j = 0; j < 3; j++){
@@ -115,36 +143,29 @@ class TicTacWindow extends JFrame{
 				}
 			}
 		}
-		
-		int inRow(int row, char owner){
-			int total = 0;
-			for(int i = 0; i < 2; i++){
-				//if (boxarr[0][]);
-			}
-			return 0;
-		}
 	}
 
 	class PanelListener implements MouseListener{
-		PanelListener(){
-
+		private PanelListener(){
+			//Make constructor private
 		}
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			SquareJPanel source = (SquareJPanel) e.getSource();
 			if(!source.isOwned()){
-				if(circleTurn){
+				if(Game.isCircleTurn()){
 					source.add(new OPanel(source.getBackground(), boxSize), "");
 					source.setOwner('O');
+					Game.setSquareTurn(true);
 				}
 				else{
 					source.add(new XPanel(source.getBackground(), boxSize), "");
 					source.setOwner('X');
+					Game.setCircleTurn(true);
 				}
 				CardLayout layout = (CardLayout) (source.getLayout());
 				layout.next(source);
-				circleTurn = !circleTurn;
 			}
 		}
 
@@ -171,12 +192,6 @@ class TicTacWindow extends JFrame{
 			// TODO Auto-generated method stub
 
 		}
-	}
-
-
-
-	private void addComponents(){
-		getContentPane().add(new BoxGrid());
 	}
 }
 
