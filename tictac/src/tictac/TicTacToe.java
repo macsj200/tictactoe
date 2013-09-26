@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 
 public class TicTacToe {
 	TicTacToe(){
-		new TicTacWindow(100, new TicTacGame());
+		new TicTacGame();
 	}
 	//Git test commit
 }
@@ -27,6 +27,7 @@ class TicTacGame{
 	TicTacGame(){
 		this.circleTurn = true;
 		this.squareTurn = false;
+		new TicTacWindow(100, this);
 	}
 	
 	public boolean isCircleTurn(){
