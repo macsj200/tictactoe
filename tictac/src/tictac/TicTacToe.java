@@ -79,26 +79,61 @@ class TicTacWindow extends JFrame{
 	TicTacGame Game;
 	BoxGrid Grid;
 
+	class GridUnit{
+		private SquareJPanel[] members;
+		private int memberCount;
+		private boolean owned;
+		GridUnit(){
+			members = new SquareJPanel[3];
+			memberCount = 0;
+			owned = false;
+		}
+
+		public void addMember(SquareJPanel newMember){
+			members[memberCount] = newMember;
+			memberCount = memberCount + 1;
+			if(memberCount == 3){
+				setOwned(checkIfOwned());
+			}
+		}
+		
+		public boolean isOwned(){
+			return owned;
+		}
+		
+		private void setOwned(boolean owned){
+			this.owned = owned;
+		}
+		
+		private boolean checkIfOwned(){
+			boolean running = true;
+			for(int i = 0; i < members.length - 1; i++){
+				running = running & members[i].getOwnerAsString().equals(members[i + 1].getOwnerAsString());
+			}
+			return running;
+		}
+	}
+
 	class Coordinates{
 		int x, y;
 		Coordinates(int x, int y){
 			this.x = x;
 			this.y = y;
 		}
-		
+
 		public String toString(){
 			return "(" + getX() + ", " + getY() + ")";
 		}
-		
+
 		public int getX(){
 			return x;
 		}
-		
+
 		public int getY(){
 			return y;
 		}
 	}
-	
+
 	private void addComponents(){
 		Grid = new BoxGrid(boxSize);
 		getContentPane().add(Grid);
@@ -125,11 +160,11 @@ class TicTacWindow extends JFrame{
 			setMaximumSize(new Dimension(size, size));
 			setPreferredSize(new Dimension(size, size));
 		}
-		
+
 		public void setCoordinates(Coordinates Location){
 			this.Location = Location;
 		}
-		
+
 		public Coordinates getCoordinates(){
 			return Location;
 		}
@@ -221,8 +256,9 @@ class TicTacWindow extends JFrame{
 	}
 
 	class BoxGrid extends JPanel{
-		private SquareJPanel[][] boxarr = new SquareJPanel[3][3];
+		private SquareJPanel[][] boxarr;
 		private BoxGrid(int boxSize){
+			boxarr = new SquareJPanel[3][3];
 			setLayout(new GridLayout(3,3));
 			for(int i = 0; i < 3; i++){
 				for(int j = 0; j < 3; j++){
