@@ -25,13 +25,30 @@ class TicTacGame{
 	private boolean circleTurn;
 	private boolean squareTurn;
 	private int turnCount;
+	private boolean over;
 	TicTacGame(){
 		this.circleTurn = true;
 		this.squareTurn = false;
 		this.turnCount = 0;
 		new TicTacWindow(100, this);
 	}
-	
+
+	public void win(){
+		endGame();
+	}
+
+	public boolean isOver(){
+		return over;
+	}
+
+	private void endGame(){
+		over = true;
+	}
+
+	public int getTurnCount(){
+		return turnCount;
+	}
+
 	public void takeTurn(){
 		turnCount = turnCount + 1;
 		setCircleTurn(!isCircleTurn());
@@ -191,6 +208,10 @@ class TicTacWindow extends JFrame{
 				}
 			}
 		}
+
+		public boolean hasAWinner(){
+			return false;
+		}
 	}
 
 	class PanelListener implements MouseListener{
@@ -201,19 +222,27 @@ class TicTacWindow extends JFrame{
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			SquareJPanel source = (SquareJPanel) e.getSource();
-			try{
-				if(Game.isCircleTurn()){
-					source.addOwnedPanel("O");
+			if(!Game.isOver()){
+				try{
+					if(Game.isCircleTurn()){
+						source.addOwnedPanel("O");
+					}
+					else if(Game.isSquareTurn()){
+						source.addOwnedPanel("X");
+					}
+					Game.takeTurn();
+					CardLayout layout = (CardLayout) (source.getLayout());
+					layout.next(source);
+
+					if(Game.getTurnCount() > 6){
+						if(Grid.hasAWinner()){
+							Game.win();
+						}
+					}
 				}
-				else if(Game.isSquareTurn()){
-					source.addOwnedPanel("X");
+				catch (OwnedException ex){
+					System.out.println(ex.getMessage() + "  Owned by: " + source.getOwnerAsString());
 				}
-				Game.takeTurn();
-				CardLayout layout = (CardLayout) (source.getLayout());
-				layout.next(source);
-			}
-			catch (OwnedException ex){
-				System.out.println(ex.getMessage() + "  Owned by: " + source.getOwnerAsString());
 			}
 		}
 
