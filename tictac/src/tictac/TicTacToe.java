@@ -24,10 +24,17 @@ public class TicTacToe {
 class TicTacGame{
 	private boolean circleTurn;
 	private boolean squareTurn;
+	private int turnCount;
 	TicTacGame(){
 		this.circleTurn = true;
 		this.squareTurn = false;
+		this.turnCount = 0;
 		new TicTacWindow(100, this);
+	}
+	
+	public void takeTurn(){
+		turnCount = turnCount + 1;
+		setCircleTurn(!isCircleTurn());
 	}
 
 	public boolean isCircleTurn(){
@@ -53,9 +60,11 @@ class TicTacGame{
 class TicTacWindow extends JFrame{
 	int boxSize;
 	TicTacGame Game;
+	BoxGrid Grid;
 
 	private void addComponents(){
-		getContentPane().add(new BoxGrid());
+		Grid = new BoxGrid(boxSize);
+		getContentPane().add(Grid);
 	}
 
 	TicTacWindow(int boxSize, TicTacGame Game){
@@ -81,12 +90,6 @@ class TicTacWindow extends JFrame{
 
 		public void addOwnedPanel(String owner) throws OwnedException{
 			addOwner(new Owner(owner, this));
-			if(OwnerObject.toString().equals("X")){
-				Game.setCircleTurn(true);
-			}
-			else if(OwnerObject.toString().equals("O")){
-				Game.setSquareTurn(true);
-			}
 		}
 
 		public boolean isOwned(){
@@ -173,7 +176,7 @@ class TicTacWindow extends JFrame{
 
 	class BoxGrid extends JPanel{
 		private JPanel[][] boxarr = new JPanel[3][3];
-		private BoxGrid(){
+		private BoxGrid(int boxSize){
 			setLayout(new GridLayout(3,3));
 			for(int i = 0; i < 3; i++){
 				for(int j = 0; j < 3; j++){
@@ -205,6 +208,7 @@ class TicTacWindow extends JFrame{
 				else if(Game.isSquareTurn()){
 					source.addOwnedPanel("X");
 				}
+				Game.takeTurn();
 				CardLayout layout = (CardLayout) (source.getLayout());
 				layout.next(source);
 			}
