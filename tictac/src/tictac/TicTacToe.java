@@ -81,10 +81,10 @@ class TicTacWindow extends JFrame{
 		
 		public void addOwnedPanel(String owner){
 			addOwner(new Owner(owner, this));
-			if(owner.equals("X")){
+			if(OwnerObject.toString().equals("X")){
 				Game.setCircleTurn(true);
 			}
-			else if(owner.equals("O")){
+			else if(OwnerObject.toString().equals("O")){
 				Game.setSquareTurn(true);
 			}
 		}
