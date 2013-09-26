@@ -29,20 +29,20 @@ class TicTacGame{
 		this.squareTurn = false;
 		new TicTacWindow(100, this);
 	}
-	
+
 	public boolean isCircleTurn(){
 		return circleTurn;
 	}
-	
+
 	public boolean isSquareTurn(){
 		return squareTurn;
 	}
-	
+
 	public void setCircleTurn(boolean circleTurn){
 		this.circleTurn = circleTurn;
 		this.squareTurn = !circleTurn;
 	}
-	
+
 	public void setSquareTurn(boolean squareTurn){
 		this.squareTurn = squareTurn;
 		this.circleTurn = !squareTurn;
@@ -53,7 +53,7 @@ class TicTacGame{
 class TicTacWindow extends JFrame{
 	int boxSize;
 	TicTacGame Game;
-	
+
 	private void addComponents(){
 		getContentPane().add(new BoxGrid());
 	}
@@ -78,8 +78,8 @@ class TicTacWindow extends JFrame{
 			setMaximumSize(new Dimension(size, size));
 			setPreferredSize(new Dimension(size, size));
 		}
-		
-		public void addOwnedPanel(String owner){
+
+		public void addOwnedPanel(String owner) throws OwnedException{
 			addOwner(new Owner(owner, this));
 			if(OwnerObject.toString().equals("X")){
 				Game.setCircleTurn(true);
@@ -96,7 +96,7 @@ class TicTacWindow extends JFrame{
 		public Owner getOwner(){
 			return OwnerObject;
 		}
-		
+
 		public String getOwnerAsString(){
 			return OwnerObject.toString();
 		}
@@ -105,12 +105,21 @@ class TicTacWindow extends JFrame{
 			owned = isOwned;
 		}
 
-		public void addOwner(Owner OwnerObject){
+		public void addOwner(Owner OwnerObject) throws OwnedException{
+			if(isOwned()){
+				throw new OwnedException();
+			}
 			this.OwnerObject = OwnerObject;
 			setOwned(true);
 		}
 	}
-	
+
+	class OwnedException extends Exception{
+		private OwnedException(){
+			super("Already owned!");
+		}
+	}
+
 	class Owner{
 		String owner;
 		SquareJPanel OwnerPanel;
@@ -126,7 +135,7 @@ class TicTacWindow extends JFrame{
 			}
 			ContainerPanel.add(OwnerPanel, "");
 		}
-		
+
 		public String toString(){
 			return owner;
 		}
@@ -189,15 +198,18 @@ class TicTacWindow extends JFrame{
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			SquareJPanel source = (SquareJPanel) e.getSource();
-			if(!source.isOwned()){
+			try{
 				if(Game.isCircleTurn()){
 					source.addOwnedPanel("O");
 				}
-				else{
+				else if(Game.isSquareTurn()){
 					source.addOwnedPanel("X");
 				}
 				CardLayout layout = (CardLayout) (source.getLayout());
 				layout.next(source);
+			}
+			catch (OwnedException ex){
+				System.out.println(ex.getMessage() + "  Owned by: " + source.getOwnerAsString());
 			}
 		}
 
