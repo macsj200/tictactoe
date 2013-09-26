@@ -33,7 +33,8 @@ class TicTacGame{
 		new TicTacWindow(100, this);
 	}
 
-	public void win(){
+	public void win(String winner){
+		System.out.println(winner + " won!");
 		endGame();
 	}
 
@@ -141,6 +142,36 @@ class TicTacWindow extends JFrame{
 	}
 
 	class Owner{
+		class XPanel extends SquareJPanel{
+			private XPanel(Color color, int size){
+				super(color, size);
+			}
+
+			public void paintComponent(Graphics g) {
+				Graphics2D g2 = (Graphics2D)g;
+				super.paintComponent(g);
+				g2.setColor(Color.RED);
+				g2.drawLine(0, 0, boxSize, boxSize);
+				g2.drawLine(0, boxSize, boxSize, 0);
+				g2.dispose();
+			}
+		}
+
+		class OPanel extends SquareJPanel{
+			private OPanel(Color color, int size){
+				super(color, size);
+			}
+
+			public void paintComponent(Graphics g) {
+				Graphics2D g2 = (Graphics2D)g;
+				super.paintComponent(g);
+				g2.setColor(Color.BLUE);
+				Ellipse2D.Double circle = new Ellipse2D.Double(0, 0, boxSize, boxSize);
+				g2.draw(circle);
+				g2.dispose();
+			}
+		}
+
 		String owner;
 		SquareJPanel OwnerPanel;
 		SquareJPanel ContainerPanel;
@@ -158,36 +189,6 @@ class TicTacWindow extends JFrame{
 
 		public String toString(){
 			return owner;
-		}
-	}
-
-	class XPanel extends SquareJPanel{
-		private XPanel(Color color, int size){
-			super(color, size);
-		}
-
-		public void paintComponent(Graphics g) {
-			Graphics2D g2 = (Graphics2D)g;
-			super.paintComponent(g);
-			g2.setColor(Color.RED);
-			g2.drawLine(0, 0, boxSize, boxSize);
-			g2.drawLine(0, boxSize, boxSize, 0);
-			g2.dispose();
-		}
-	}
-
-	class OPanel extends SquareJPanel{
-		private OPanel(Color color, int size){
-			super(color, size);
-		}
-
-		public void paintComponent(Graphics g) {
-			Graphics2D g2 = (Graphics2D)g;
-			super.paintComponent(g);
-			g2.setColor(Color.BLUE);
-			Ellipse2D.Double circle = new Ellipse2D.Double(0, 0, boxSize, boxSize);
-			g2.draw(circle);
-			g2.dispose();
 		}
 	}
 
@@ -236,7 +237,7 @@ class TicTacWindow extends JFrame{
 
 					if(Game.getTurnCount() > 6){
 						if(Grid.hasAWinner()){
-							Game.win();
+							Game.win("X");
 						}
 					}
 				}
