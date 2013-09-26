@@ -22,12 +22,12 @@ public class TicTacToe {
 
 class TicTacGame{
 	private boolean circleTurn;
-	private boolean squareTurn;
+	private boolean xTurn;
 	private int turnCount;
 	private boolean over;
 	TicTacGame(){
 		this.circleTurn = true;
-		this.squareTurn = false;
+		this.xTurn = false;
 		this.turnCount = 0;
 		new TicTacWindow(100, this);
 	}
@@ -58,18 +58,18 @@ class TicTacGame{
 		return circleTurn;
 	}
 
-	public boolean isSquareTurn(){
-		return squareTurn;
+	public boolean isXTurn(){
+		return xTurn;
 	}
 
 	public void setCircleTurn(boolean circleTurn){
 		this.circleTurn = circleTurn;
-		this.squareTurn = !circleTurn;
+		this.xTurn = !circleTurn;
 	}
 
-	public void setSquareTurn(boolean squareTurn){
-		this.squareTurn = squareTurn;
-		this.circleTurn = !squareTurn;
+	public void setXTurn(boolean xTurn){
+		this.xTurn = xTurn;
+		this.circleTurn = !xTurn;
 	}
 }
 
@@ -257,7 +257,7 @@ class TicTacWindow extends JFrame{
 					if(Game.isCircleTurn()){
 						source.addOwnedPanel("O");
 					}
-					else if(Game.isSquareTurn()){
+					else if(Game.isXTurn()){
 						source.addOwnedPanel("X");
 					}
 					Game.takeTurn();
