@@ -79,41 +79,6 @@ class TicTacWindow extends JFrame{
 	TicTacGame Game;
 	BoxGrid Grid;
 
-	class GridUnit{
-		private SquareJPanel[] members;
-		private int memberCount;
-		private boolean owned;
-		GridUnit(){
-			members = new SquareJPanel[3];
-			memberCount = 0;
-			owned = false;
-		}
-
-		public void addMember(SquareJPanel newMember){
-			members[memberCount] = newMember;
-			memberCount = memberCount + 1;
-			if(memberCount == 3){
-				setOwned(checkIfOwned());
-			}
-		}
-		
-		public boolean isOwned(){
-			return owned;
-		}
-		
-		private void setOwned(boolean owned){
-			this.owned = owned;
-		}
-		
-		private boolean checkIfOwned(){
-			boolean running = true;
-			for(int i = 0; i < members.length - 1; i++){
-				running = running & members[i].getOwnerAsString().equals(members[i + 1].getOwnerAsString());
-			}
-			return running;
-		}
-	}
-
 	class Coordinates{
 		int x, y;
 		Coordinates(int x, int y){
@@ -274,10 +239,6 @@ class TicTacWindow extends JFrame{
 				}
 			}
 		}
-
-		public boolean hasAWinner(){
-			return false;
-		}
 	}
 
 	class PanelListener implements MouseListener{
@@ -301,9 +262,7 @@ class TicTacWindow extends JFrame{
 					layout.next(source);
 
 					if(Game.getTurnCount() > 6){
-						if(Grid.hasAWinner()){
-							Game.win("X");
-						}
+						
 					}
 				}
 				catch (OwnedException ex){
